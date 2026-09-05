@@ -13,7 +13,7 @@ export default function LoginPage() {
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-slate-50 px-4 py-14">
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[--color-primary] text-white">
+          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-white">
             <Package className="h-6 w-6" />
           </span>
           <h1 className="mt-4 text-2xl font-bold text-slate-900">Customer Login</h1>
@@ -31,7 +31,7 @@ export default function LoginPage() {
         </Card>
 
         <p className="mt-6 text-center text-sm text-slate-500">
-          <Link href="/" className="hover:text-[--color-primary]">
+          <Link href="/" className="hover:text-primary">
             ← Back to home
           </Link>
         </p>

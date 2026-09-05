@@ -32,7 +32,7 @@ export default async function SchedulePage() {
           {schedules.map((s) => (
             <Card key={s.id}>
               <CardContent className="flex items-start gap-4 p-6">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[--color-primary]/10 text-[--color-primary]">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <CalendarDays className="h-6 w-6" />
                 </div>
                 <div className="flex-1">

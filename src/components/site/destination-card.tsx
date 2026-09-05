@@ -6,7 +6,7 @@ export function DestinationCard({ name, region }: { name: string; region: "visay
   return (
     <Card className="transition-shadow hover:shadow-md">
       <CardContent className="flex items-center gap-3 p-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[--color-secondary]/10 text-[--color-secondary-dark]">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary-dark">
           <MapPin className="h-5 w-5" />
         </div>
         <div className="min-w-0">

@@ -17,7 +17,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
         <div className="container-page flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-bold text-[--color-primary]">
+          <Link href="/" className="flex items-center gap-2 font-bold text-primary">
             <Package className="h-5 w-5" />
             {COMPANY.name} 360
           </Link>

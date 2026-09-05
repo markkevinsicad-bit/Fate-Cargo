@@ -34,7 +34,7 @@ export default async function DashboardOverviewPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardContent className="flex items-center gap-4 p-6">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[--color-primary]/10 text-[--color-primary]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Package className="h-5 w-5" />
             </div>
             <div>
@@ -45,7 +45,7 @@ export default async function DashboardOverviewPage() {
         </Card>
         <Card>
           <CardContent className="flex items-center gap-4 p-6">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[--color-secondary]/10 text-[--color-secondary-dark]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-secondary/10 text-secondary-dark">
               <FileText className="h-5 w-5" />
             </div>
             <div>

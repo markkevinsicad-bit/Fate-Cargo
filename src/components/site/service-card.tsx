@@ -23,7 +23,7 @@ export function ServiceCard({
   return (
     <Card className="h-full transition-shadow hover:shadow-md">
       <CardHeader>
-        <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-lg bg-[--color-primary]/10 text-[--color-primary]">
+        <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
           <Icon className="h-6 w-6" />
         </div>
         <CardTitle>{name}</CardTitle>

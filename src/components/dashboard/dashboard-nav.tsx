@@ -29,7 +29,7 @@ export function DashboardNav() {
             href={link.href}
             className={cn(
               "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100",
-              active && "bg-[--color-primary]/10 text-[--color-primary]",
+              active && "bg-primary/10 text-primary",
             )}
           >
             <link.icon className="h-4 w-4" />

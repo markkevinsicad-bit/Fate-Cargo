@@ -4,11 +4,11 @@ import { COMPANY } from "@/lib/constants";
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-[--color-primary-dark] text-slate-200">
+    <footer className="border-t border-slate-200 bg-primary-dark text-slate-200">
       <div className="container-page grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <div className="flex items-center gap-2 font-bold text-white">
-            <Package className="h-5 w-5 text-[--color-secondary]" />
+            <Package className="h-5 w-5 text-secondary" />
             {COMPANY.name} 360
           </div>
           <p className="mt-3 text-sm text-slate-300">{COMPANY.tagline}</p>
@@ -38,12 +38,12 @@ export function Footer() {
           <h3 className="text-sm font-semibold uppercase tracking-wide text-white">Contact</h3>
           <ul className="mt-3 space-y-2 text-sm">
             <li className="flex items-start gap-2">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[--color-secondary]" />
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-secondary" />
               {COMPANY.address}
             </li>
             {COMPANY.phones.map((phone) => (
               <li key={phone} className="flex items-center gap-2">
-                <Phone className="h-4 w-4 shrink-0 text-[--color-secondary]" />
+                <Phone className="h-4 w-4 shrink-0 text-secondary" />
                 <a href={`tel:${phone}`} className="hover:text-white">{phone}</a>
               </li>
             ))}

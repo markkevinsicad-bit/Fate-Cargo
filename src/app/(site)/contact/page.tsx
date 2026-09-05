@@ -17,21 +17,21 @@ export default function ContactPage() {
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
         <div className="rounded-xl border border-slate-200 p-6">
-          <MapPin className="h-6 w-6 text-[--color-primary]" />
+          <MapPin className="h-6 w-6 text-primary" />
           <h3 className="mt-3 font-semibold text-slate-900">Office / Warehouse</h3>
           <p className="mt-1 text-slate-600">{COMPANY.address}</p>
         </div>
         <div className="rounded-xl border border-slate-200 p-6">
-          <Phone className="h-6 w-6 text-[--color-primary]" />
+          <Phone className="h-6 w-6 text-primary" />
           <h3 className="mt-3 font-semibold text-slate-900">Phone</h3>
           {COMPANY.phones.map((p) => (
             <p key={p} className="mt-1">
-              <a href={`tel:${p}`} className="text-slate-600 hover:text-[--color-primary]">{p}</a>
+              <a href={`tel:${p}`} className="text-slate-600 hover:text-primary">{p}</a>
             </p>
           ))}
         </div>
         <div className="rounded-xl border border-slate-200 p-6 sm:col-span-2">
-          <Clock className="h-6 w-6 text-[--color-primary]" />
+          <Clock className="h-6 w-6 text-primary" />
           <h3 className="mt-3 font-semibold text-slate-900">Loading Schedule</h3>
           <p className="mt-1 text-slate-600">Visayas: every Friday · Mindanao: every Saturday</p>
         </div>

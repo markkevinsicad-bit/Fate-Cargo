@@ -19,7 +19,7 @@ export function ScheduleStatusRow({ schedule }: { schedule: Schedule }) {
     <Card>
       <CardContent className="flex flex-wrap items-center justify-between gap-4 p-4">
         <div className="flex items-center gap-3">
-          <CalendarClock className="h-5 w-5 text-[--color-primary]" />
+          <CalendarClock className="h-5 w-5 text-primary" />
           <div>
             <p className="font-semibold capitalize text-slate-900">{schedule.region}</p>
             <p className="text-sm text-slate-500">{formatDate(schedule.loading_date)}</p>

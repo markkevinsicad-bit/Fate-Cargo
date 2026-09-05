@@ -31,7 +31,7 @@ export default function AboutPage() {
       <div className="mt-10 grid gap-6 sm:grid-cols-3">
         {VALUES.map((v) => (
           <div key={v.title} className="rounded-xl border border-slate-200 p-6">
-            <v.icon className="h-8 w-8 text-[--color-primary]" />
+            <v.icon className="h-8 w-8 text-primary" />
             <h3 className="mt-3 font-semibold text-slate-900">{v.title}</h3>
             <p className="mt-1 text-sm text-slate-500">{v.description}</p>
           </div>
@@ -39,7 +39,7 @@ export default function AboutPage() {
       </div>
 
       <div className="mt-12 flex items-start gap-3 rounded-xl bg-slate-50 p-6">
-        <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[--color-primary]" />
+        <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
         <div>
           <p className="font-semibold text-slate-900">Office & Warehouse</p>
           <p className="text-slate-600">{COMPANY.address}</p>

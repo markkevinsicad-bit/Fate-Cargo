@@ -62,7 +62,7 @@ export default async function AdminDashboardPage() {
       <div>
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-900">Upcoming Loading Schedules</h2>
-          <Link href="/admin/schedules" className="flex items-center gap-1 text-sm font-medium text-[--color-primary] hover:underline">
+          <Link href="/admin/schedules" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
             Manage <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
@@ -71,7 +71,7 @@ export default async function AdminDashboardPage() {
             {upcomingSchedules.map((s) => (
               <Card key={s.id}>
                 <CardContent className="flex items-center gap-3 p-4">
-                  <CalendarClock className="h-5 w-5 text-[--color-primary]" />
+                  <CalendarClock className="h-5 w-5 text-primary" />
                   <div>
                     <p className="text-xs font-medium uppercase text-slate-500">{s.region}</p>
                     <p className="font-semibold text-slate-900">{formatDate(s.loading_date)}</p>

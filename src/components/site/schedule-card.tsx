@@ -15,7 +15,7 @@ export function ScheduleCard({ region, schedule }: { region: "visayas" | "mindan
   return (
     <Card className="overflow-hidden">
       <CardContent className="flex items-start gap-4 p-6">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[--color-primary]/10 text-[--color-primary]">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
           <CalendarClock className="h-6 w-6" />
         </div>
         <div className="min-w-0 flex-1">
