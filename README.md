@@ -177,10 +177,24 @@ supabase/
 - ✅ Honest empty states everywhere real data doesn't exist yet (no fabricated stats)
 - ✅ Phase 2/3 modules (bookings, shipments, warehouse, pickup, delivery, QR scanner, reports, settings) are clearly labeled placeholders — not fake functionality
 
-## What's intentionally NOT in Phase 1 (comes in Phase 2/3)
+## What's implemented in Phase 2
 
-- Booking flow, FATE Cargo ID generation, QR code generation/scanning
-- Shipment lifecycle tracking, warehouse receiving, Cargo Condition Passport
+- ✅ Complete booking workflow: multi-section booking form → review/confirm screen (duplicate-submit guarded) → `create_booking()` RPC (customer_id always from `auth.uid()`, never trusted from the client)
+- ✅ Booking = shipment (single entity, per the agreed architecture) progressing through the full `shipment_status` lifecycle
+- ✅ Safe, atomic FATE Cargo ID generation (`FATE-YYYY-NNNNNN`, row-lock upsert counter — no `Math.random()`)
+- ✅ Secure QR token generation (48-char hex via `gen_random_bytes`) — QR images encode only the opaque token, never customer data
+- ✅ Customer: QR view/download/share, shipment detail with full tracking timeline, cargo condition records, dashboard shipment list
+- ✅ Public `/track`: safe, limited lookup by FATE Cargo ID via a SECURITY DEFINER RPC that returns only non-sensitive fields
+- ✅ Admin/staff QR scanner (`/admin/scanner`): camera-based (jsQR) with manual FATE Cargo ID fallback, contextual operational actions per shipment status
+- ✅ Warehouse receiving workflow: `receive_cargo()` RPC does condition recording + status update + tracking event + notification atomically (all-or-nothing)
+- ✅ Cargo Condition Passport: condition records at receiving/pre-loading/arrival/delivery, photos in a private Supabase Storage bucket with role-based RLS
+- ✅ Admin bookings/shipments management: search, filter by status/destination, detail view with status control, internal notes (staff/admin only), trip assignment
+- ✅ Loading trips: create trips, assign shipments, real calculated totals (weight, destinations, special handling, ready/loaded counts — no fabricated numbers)
+- ✅ QR scan audit log (`qr_scan_logs`) — every scan, successful or not, is recorded
+- ✅ Every shipment status change creates a tracking event + customer notification automatically (via RPC, not scattered client-side logic)
+
+## What's intentionally NOT in Phase 2 (Phase 3)
+
 - Driver pickup/delivery workflows, proof of delivery
-- Pricing engine (quotes are reviewed and priced manually by admin for now)
-- Reports/analytics, audit logs
+- Realtime (Supabase Realtime) live updates — current implementation uses Next.js `revalidatePath` + manual refresh; live push updates were not added this phase
+- Repeat booking, business customers, bulk booking, referrals, reviews, reports/analytics, audit logs, settings

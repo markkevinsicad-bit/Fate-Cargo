@@ -70,8 +70,6 @@ export const MOVING_TYPE_LABELS: Record<MovingType, string> = {
   condo: "Condo Transfer",
 };
 
-// Shipment lifecycle statuses are defined now (per project-wide status
-// contract) even though the `shipments` table itself is built in Phase 2.
 export const SHIPMENT_STATUSES = [
   "booked",
   "awaiting_pickup",
@@ -89,6 +87,79 @@ export const SHIPMENT_STATUSES = [
   "issue_reported",
 ] as const;
 export type ShipmentStatus = (typeof SHIPMENT_STATUSES)[number];
+
+export const SHIPMENT_STATUS_LABELS: Record<ShipmentStatus, string> = {
+  booked: "Booked",
+  awaiting_pickup: "Awaiting Pickup",
+  cargo_received: "Cargo Received",
+  at_warehouse: "At Warehouse",
+  consolidating: "Consolidating",
+  ready_for_loading: "Ready for Loading",
+  loaded: "Loaded",
+  in_transit: "In Transit",
+  at_destination_hub: "At Destination Hub",
+  out_for_delivery: "Out for Delivery",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+  on_hold: "On Hold",
+  issue_reported: "Issue Reported",
+};
+
+/** Coarse grouping used for dashboard filters ("Active" vs "Delivered" etc). */
+export const ACTIVE_SHIPMENT_STATUSES: ShipmentStatus[] = [
+  "booked",
+  "awaiting_pickup",
+  "cargo_received",
+  "at_warehouse",
+  "consolidating",
+  "ready_for_loading",
+  "loaded",
+  "in_transit",
+  "at_destination_hub",
+  "out_for_delivery",
+];
+
+export const PACKAGE_TYPES = [
+  "Box",
+  "Carton",
+  "Crate",
+  "Pallet",
+  "Sack",
+  "Drum",
+  "Bag",
+  "Bundle",
+  "Other",
+] as const;
+
+export const CARGO_CONDITION_STAGES = ["receiving", "pre_loading", "arrival", "delivery"] as const;
+export type CargoConditionStage = (typeof CARGO_CONDITION_STAGES)[number];
+export const CARGO_CONDITION_STAGE_LABELS: Record<CargoConditionStage, string> = {
+  receiving: "Receiving",
+  pre_loading: "Pre-Loading",
+  arrival: "Arrival",
+  delivery: "Delivery",
+};
+
+export const LOADING_TRIP_STATUSES = ["planned", "open", "loading", "departed", "completed", "cancelled"] as const;
+export type LoadingTripStatus = (typeof LOADING_TRIP_STATUSES)[number];
+export const LOADING_TRIP_STATUS_LABELS: Record<LoadingTripStatus, string> = {
+  planned: "Planned",
+  open: "Open",
+  loading: "Loading",
+  departed: "Departed",
+  completed: "Completed",
+  cancelled: "Cancelled",
+};
+
+export const QR_SCAN_TYPES = ["validation", "receiving", "warehouse", "loading", "delivery"] as const;
+export type QrScanType = (typeof QR_SCAN_TYPES)[number];
+export const QR_SCAN_TYPE_LABELS: Record<QrScanType, string> = {
+  validation: "Validation",
+  receiving: "Receiving",
+  warehouse: "Warehouse",
+  loading: "Loading",
+  delivery: "Delivery",
+};
 
 export const COMPANY = {
   name: "FATE CARGO",

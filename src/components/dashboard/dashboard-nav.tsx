@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, User, Package, FileText, Bell, LogOut } from "lucide-react";
+import { LayoutDashboard, User, Package, FileText, Bell, LogOut, PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/actions/profile";
 import { useRouter } from "next/navigation";
 
 const LINKS = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
+  { href: "/dashboard/book", label: "Book a Shipment", icon: PlusCircle },
   { href: "/dashboard/shipments", label: "My Shipments", icon: Package },
   { href: "/dashboard/quotes", label: "Quote Requests", icon: FileText },
   { href: "/dashboard/notifications", label: "Notifications", icon: Bell },

@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Users, ClipboardList, CalendarClock, Package, ArrowRight } from "lucide-react";
+import { Users, ClipboardList, CalendarClock, Package, ArrowRight, QrCode } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
+import { ACTIVE_SHIPMENT_STATUSES } from "@/lib/constants";
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -11,13 +12,18 @@ export default async function AdminDashboardPage() {
 
   const [
     { count: customerCount },
-    { count: totalQuoteCount },
     { count: pendingQuoteCount },
+    { count: activeShipmentCount },
+    { count: totalBookingCount },
     { data: upcomingSchedules },
   ] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "customer"),
-    supabase.from("quote_requests").select("*", { count: "exact", head: true }),
     supabase.from("quote_requests").select("*", { count: "exact", head: true }).eq("status", "requested"),
+    supabase
+      .from("shipments")
+      .select("*", { count: "exact", head: true })
+      .in("status", ACTIVE_SHIPMENT_STATUSES),
+    supabase.from("shipments").select("*", { count: "exact", head: true }),
     supabase
       .from("loading_schedules")
       .select("*")
@@ -28,9 +34,9 @@ export default async function AdminDashboardPage() {
 
   const metrics = [
     { label: "Total Customers", value: customerCount ?? 0, icon: Users, color: "bg-blue-100 text-blue-700" },
-    { label: "Quote Requests", value: totalQuoteCount ?? 0, icon: ClipboardList, color: "bg-amber-100 text-amber-700" },
-    { label: "Pending Requests", value: pendingQuoteCount ?? 0, icon: ClipboardList, color: "bg-red-100 text-red-700" },
-    { label: "Active Shipments", value: 0, icon: Package, color: "bg-emerald-100 text-emerald-700", comingSoon: true },
+    { label: "Total Bookings", value: totalBookingCount ?? 0, icon: ClipboardList, color: "bg-slate-100 text-slate-700" },
+    { label: "Active Shipments", value: activeShipmentCount ?? 0, icon: Package, color: "bg-emerald-100 text-emerald-700" },
+    { label: "Pending Quotes", value: pendingQuoteCount ?? 0, icon: ClipboardList, color: "bg-red-100 text-red-700" },
   ];
 
   return (
@@ -49,14 +55,20 @@ export default async function AdminDashboardPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-slate-900">{m.value}</p>
-                <p className="text-sm text-slate-500">
-                  {m.label}
-                  {m.comingSoon && <span className="ml-1 text-xs text-slate-400">(Phase 2)</span>}
-                </p>
+                <p className="text-sm text-slate-500">{m.label}</p>
               </div>
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      <div className="flex flex-wrap gap-3">
+        <Link href="/admin/scanner" className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:border-primary hover:text-primary">
+          <QrCode className="h-4 w-4" /> Open QR Scanner
+        </Link>
+        <Link href="/admin/warehouse" className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:border-primary hover:text-primary">
+          <Package className="h-4 w-4" /> Warehouse Dashboard
+        </Link>
       </div>
 
       <div>

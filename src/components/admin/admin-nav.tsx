@@ -15,6 +15,7 @@ import {
   BarChart3,
   Settings,
   LogOut,
+  Ship,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -22,16 +23,17 @@ import { signOut } from "@/actions/profile";
 
 const LINKS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true, live: true },
+  { href: "/admin/scanner", label: "QR Scanner", icon: QrCode, live: true },
+  { href: "/admin/bookings", label: "Bookings", icon: ClipboardList, live: true },
+  { href: "/admin/shipments", label: "Shipments", icon: Package, live: true },
+  { href: "/admin/warehouse", label: "Warehouse", icon: Warehouse, live: true },
+  { href: "/admin/loading-trips", label: "Loading Trips", icon: Ship, live: true },
   { href: "/admin/quotes", label: "Quote Requests", icon: ClipboardList, live: true },
   { href: "/admin/moving-requests", label: "Moving Requests", icon: ClipboardList, live: true },
-  { href: "/admin/bookings", label: "Bookings", icon: ClipboardList, live: false },
-  { href: "/admin/shipments", label: "Shipments", icon: Package, live: false },
   { href: "/admin/customers", label: "Customers", icon: Users, live: true },
-  { href: "/admin/warehouse", label: "Warehouse", icon: Warehouse, live: false },
+  { href: "/admin/schedules", label: "Schedules", icon: CalendarClock, live: true },
   { href: "/admin/pickup", label: "Pickup", icon: Truck, live: false },
   { href: "/admin/delivery", label: "Delivery", icon: MapPin, live: false },
-  { href: "/admin/schedules", label: "Schedules", icon: CalendarClock, live: true },
-  { href: "/admin/qr-scanner", label: "QR Scanner", icon: QrCode, live: false },
   { href: "/admin/reports", label: "Reports", icon: BarChart3, live: false },
   { href: "/admin/settings", label: "Settings", icon: Settings, live: false },
 ];
@@ -59,7 +61,7 @@ export function AdminNav() {
             </span>
             {!link.live && (
               <Badge variant="outline" className="border-white/20 text-[10px] text-slate-400">
-                Phase 2
+                Phase 3
               </Badge>
             )}
           </Link>
