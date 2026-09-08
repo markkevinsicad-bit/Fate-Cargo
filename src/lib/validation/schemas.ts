@@ -96,3 +96,23 @@ export const bookingSchema = z.object({
   path: ["pickup_date"],
 });
 export type BookingInput = z.infer<typeof bookingSchema>;
+
+export const staffLoginSchema = z.object({
+  email: z.string().trim().email("Enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+
+export const createTeamAccountSchema = z.object({
+  fullName: z.string().trim().min(2, "Full name is required").max(120),
+  email: z.string().trim().email("Enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  role: z.enum(["staff", "warehouse", "driver", "admin"]),
+});
+
+export const resetPasswordRequestSchema = z.object({
+  email: z.string().trim().email("Enter a valid email address"),
+});
+
+export const setNewPasswordSchema = z.object({
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});

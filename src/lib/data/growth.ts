@@ -179,3 +179,19 @@ export async function getAllDriversWithStats() {
 
   return results;
 }
+
+export async function getInternalAccounts() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .in("role", ["admin", "staff", "warehouse", "driver"])
+    .order("role")
+    .order("full_name");
+
+  if (error) {
+    console.error("getInternalAccounts error:", error);
+    return [];
+  }
+  return data ?? [];
+}

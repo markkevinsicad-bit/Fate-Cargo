@@ -12,6 +12,12 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   if (!profile) {
     redirect("/login?redirect=/dashboard");
   }
+  if (profile.role === "admin" || profile.role === "staff" || profile.role === "warehouse") {
+    redirect("/admin");
+  }
+  if (profile.role === "driver") {
+    redirect("/driver");
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">

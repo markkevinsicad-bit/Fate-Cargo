@@ -79,37 +79,67 @@ Open **Supabase Dashboard → SQL Editor** and run each file in
 
 ---
 
-## 4. Enable Phone Auth (OTP)
+## 4. Authentication setup
 
-Customer login uses phone + OTP exclusively (no passwords). In your Supabase
-project:
+FATE CARGO 360 uses **two separate login methods**:
+
+- **Customers** → phone number + OTP (no password, ever)
+- **Admin / Staff / Warehouse / Driver** → email + password (no SMS/Twilio needed)
+
+### 4a. Customer phone OTP
 
 1. **Authentication → Sign In / Providers → Phone** → enable it.
 2. Configure a real SMS provider (Twilio, MessageBird, or Vonage) under
    **Authentication → Sign In / Providers → Phone → SMS Provider**. Without a
-   configured provider, OTP codes won't actually be sent.
+   configured provider, OTP codes won't actually be sent. If you don't have
+   an SMS provider available yet, you can still fully build and test
+   everything else - only the customer-facing phone login will be blocked
+   until a provider is configured.
 3. (Optional, for local dev with `supabase start`) `supabase/config.toml`
    already has phone auth enabled for the local emulator.
+
+### 4b. Staff email + password
+
+1. **Authentication → Sign In / Providers → Email** → enable it, and make
+   sure **"Enable email signup"** (public self-registration) is **OFF**.
+   Staff/admin/warehouse/driver accounts are only ever created by an
+   existing admin from `/admin/team` (using the service-role Admin API),
+   never through public sign-up.
+2. Password-reset emails ("Forgot password?" on `/staff-login`) use
+   Supabase's built-in email sending for auth emails - this works out of
+   the box with no SMS/Twilio setup required.
+3. **Bootstrapping your first admin** (chicken-and-egg: creating a team
+   account normally requires an existing admin):
+   - Go to **Supabase Dashboard → Authentication → Users → Add User**,
+     create a user with an email and password, and check "Auto Confirm
+     User".
+   - Then in the **SQL Editor**, run:
+     ```sql
+     update public.profiles set role = 'admin' where email = 'you@example.com';
+     ```
+   - Log in at `/staff-login` with that email/password. From then on, use
+     `/admin/team` to create every other staff/warehouse/driver/admin
+     account normally.
+
+**Security note:** roles for staff-created accounts are stored in Supabase
+Auth's `app_metadata`, not `user_metadata` - `app_metadata` can only be set
+via the service-role Admin API, never by a client-side signup call. This is
+what prevents a customer from ever self-escalating their role through the
+public signup API. See migration `0027_staff_email_auth.sql`.
 
 ---
 
 ## 5. Install dependencies and run
+
 
 ```bash
 npm install
 npm run dev
 ```
 
-Visit `http://localhost:3000`.
-
-To make yourself an admin: sign up once as a customer via `/login`, then in
-the Supabase SQL editor run:
-
-```sql
-update public.profiles set role = 'admin' where phone = '+63917XXXXXXX';
-```
-
-Then visit `/admin`.
+Visit `http://localhost:3000`. To access the admin panel, follow the
+"Bootstrapping your first admin" steps in section 4b above, then visit
+`/admin`.
 
 ---
 
@@ -209,6 +239,13 @@ supabase/
 - ✅ **Settings** (`/admin/settings`): manage services, destinations, cargo categories, and referral settings without touching code
 - ✅ **Audit logs**: every significant RPC (booking, status change, receiving, QR scan, pickup/delivery assignment & completion, referral redemption, review) writes an audit trail row; viewer at `/admin/audit-logs`
 - ✅ Extended `can_access_shipment()` and storage policies so drivers only see/upload photos for shipments they're actually assigned to
+
+## Authentication model (updated after Phase 3)
+
+- **Customers**: phone + OTP only, at `/login`. No password, ever.
+- **Admin / Staff / Warehouse / Driver**: email + password, at `/staff-login`, with a "Forgot password?" flow using Supabase's built-in auth email (no SMS/Twilio required). Accounts are created exclusively by an existing admin from `/admin/team` via the service-role Admin API - there is no public self-registration for these roles.
+- Role is stored in Supabase Auth's `app_metadata` (server-only, never client-settable), not `user_metadata`, specifically to prevent a customer from self-escalating their role through the public signup API. See migration `0027_staff_email_auth.sql`.
+- Deactivating a team account (`/admin/team` or `/admin/drivers`) both flips `profiles.is_active` and bans the underlying Supabase Auth user, so a deactivated staff member truly cannot log back in (not just a UI-level flag).
 
 ## What's simplified or deferred (noted honestly, not hidden)
 

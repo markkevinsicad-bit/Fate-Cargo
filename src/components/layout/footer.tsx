@@ -52,7 +52,10 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10 py-5 text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} {COMPANY.name}. All rights reserved.
+        © {new Date().getFullYear()} {COMPANY.name}. All rights reserved.{" "}
+        <Link href="/staff-login" className="text-slate-500 hover:text-slate-300">
+          Staff login
+        </Link>
       </div>
     </footer>
   );

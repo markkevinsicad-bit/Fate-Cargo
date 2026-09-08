@@ -13,7 +13,7 @@ export function DriverLogoutButton() {
       size="sm"
       onClick={async () => {
         await signOut();
-        router.push("/");
+        router.push("/staff-login");
         router.refresh();
       }}
     >

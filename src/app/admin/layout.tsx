@@ -10,10 +10,10 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const profile = await getCurrentProfile();
 
   if (!profile) {
-    redirect("/login?redirect=/admin");
+    redirect("/staff-login?redirect=/admin");
   }
-  if (profile.role !== "admin") {
-    redirect("/dashboard");
+  if (profile.role !== "admin" && profile.role !== "staff" && profile.role !== "warehouse") {
+    redirect(profile.role === "driver" ? "/driver" : "/dashboard");
   }
 
   return (
@@ -23,12 +23,12 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           <Link href="/admin" className="flex items-center gap-2 px-2 py-3 font-bold text-white">
             <Package className="h-5 w-5 text-secondary" />
             {COMPANY.name} 360
-            <span className="ml-auto rounded bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-300">
-              Admin
+            <span className="ml-auto rounded bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-300 capitalize">
+              {profile.role}
             </span>
           </Link>
           <div className="mt-4">
-            <AdminNav />
+            <AdminNav role={profile.role} />
           </div>
         </aside>
         <main className="p-6 lg:p-10">{children}</main>

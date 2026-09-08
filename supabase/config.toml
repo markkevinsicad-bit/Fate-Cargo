@@ -34,6 +34,15 @@ enable_confirmations = false
 [auth.email]
 enable_signup = false
 enable_confirmations = false
+# IMPORTANT: enable_signup stays false - this blocks public self-registration
+# via email/password. Staff/admin/warehouse/driver accounts are created
+# ONLY server-side by an existing admin (via the Supabase Admin API using
+# the service-role key, in src/actions/team.ts), which bypasses this flag
+# by design. Verify this same "Enable email signup: OFF" setting in
+# Supabase Dashboard -> Authentication -> Providers -> Email for your
+# hosted project - this file only affects local `supabase start`.
+# Password reset emails use Supabase's built-in email sending for auth
+# emails, which works without any SMS/Twilio setup.
 
 [storage]
 enabled = true

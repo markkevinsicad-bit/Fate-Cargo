@@ -35,6 +35,12 @@ export default function LoginPage() {
             ← Back to home
           </Link>
         </p>
+        <p className="mt-2 text-center text-xs text-slate-400">
+          FATE Cargo staff?{" "}
+          <Link href="/staff-login" className="text-slate-500 hover:text-primary">
+            Staff login
+          </Link>
+        </p>
       </div>
     </div>
   );

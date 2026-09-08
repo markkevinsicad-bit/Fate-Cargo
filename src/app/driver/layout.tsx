@@ -10,7 +10,7 @@ export default async function DriverLayout({ children }: { children: ReactNode }
   const profile = await getCurrentProfile();
 
   if (!profile) {
-    redirect("/login?redirect=/driver");
+    redirect("/staff-login?redirect=/driver");
   }
   if (profile.role !== "driver" && profile.role !== "admin") {
     redirect("/dashboard");
