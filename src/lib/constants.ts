@@ -205,3 +205,65 @@ export const DESTINATIONS: { name: string; region: Region }[] = [
   { name: "Davao", region: "mindanao" },
   { name: "General Santos", region: "mindanao" },
 ];
+
+// ---------------------------------------------------------------------
+// Phase 3: pickup, delivery, leads, referrals, reviews
+// ---------------------------------------------------------------------
+
+export const PICKUP_STATUSES = [
+  "requested",
+  "scheduled",
+  "assigned",
+  "out_for_pickup",
+  "arrived",
+  "picked_up",
+  "failed",
+  "cancelled",
+] as const;
+export type PickupStatus = (typeof PICKUP_STATUSES)[number];
+export const PICKUP_STATUS_LABELS: Record<PickupStatus, string> = {
+  requested: "Requested",
+  scheduled: "Scheduled",
+  assigned: "Assigned",
+  out_for_pickup: "Out for Pickup",
+  arrived: "Arrived",
+  picked_up: "Picked Up",
+  failed: "Failed",
+  cancelled: "Cancelled",
+};
+
+export const DELIVERY_STATUSES = [
+  "pending_assignment",
+  "assigned",
+  "out_for_delivery",
+  "arrived",
+  "delivered",
+  "failed",
+  "return_required",
+] as const;
+export type DeliveryStatus = (typeof DELIVERY_STATUSES)[number];
+export const DELIVERY_STATUS_LABELS: Record<DeliveryStatus, string> = {
+  pending_assignment: "Pending Assignment",
+  assigned: "Assigned",
+  out_for_delivery: "Out for Delivery",
+  arrived: "Arrived",
+  delivered: "Delivered",
+  failed: "Failed",
+  return_required: "Return Required",
+};
+
+export const LEAD_STATUSES = ["new", "contacted", "quoted", "converted", "lost"] as const;
+export type LeadStatus = (typeof LEAD_STATUSES)[number];
+export const LEAD_STATUS_LABELS: Record<LeadStatus, string> = {
+  new: "New",
+  contacted: "Contacted",
+  quoted: "Quoted",
+  converted: "Converted",
+  lost: "Lost",
+};
+
+export const ORG_MEMBER_ROLES = ["member", "manager", "owner"] as const;
+export type OrgMemberRole = (typeof ORG_MEMBER_ROLES)[number];
+
+export const SAVED_ADDRESS_TYPES = ["pickup", "delivery", "both"] as const;
+export type SavedAddressType = (typeof SAVED_ADDRESS_TYPES)[number];

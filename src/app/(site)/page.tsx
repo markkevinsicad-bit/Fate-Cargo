@@ -4,14 +4,18 @@ import { Button } from "@/components/ui/button";
 import { ServiceCard } from "@/components/site/service-card";
 import { DestinationCard } from "@/components/site/destination-card";
 import { ScheduleCard } from "@/components/site/schedule-card";
+import { QuickLeadForm } from "@/components/forms/quick-lead-form";
 import { COMPANY } from "@/lib/constants";
 import { getActiveServices, getActiveDestinations, getNextLoadingSchedules } from "@/lib/data/public";
+import { getReviews } from "@/lib/data/growth";
+import { Star } from "lucide-react";
 
 export default async function HomePage() {
-  const [services, destinations, schedules] = await Promise.all([
+  const [services, destinations, schedules, reviews] = await Promise.all([
     getActiveServices(),
     getActiveDestinations(),
     getNextLoadingSchedules(),
+    getReviews(true),
   ]);
 
   return (
@@ -130,19 +134,49 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* Reviews (real, approved reviews only) */}
+      {reviews.length > 0 && (
+        <section className="py-14">
+          <div className="container-page">
+            <h2 className="mb-6 text-2xl font-bold text-slate-900">What Our Customers Say</h2>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {reviews.slice(0, 6).map((r) => (
+                <div key={r.id} className="rounded-xl border border-slate-200 bg-white p-5">
+                  <div className="flex gap-0.5 text-secondary">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className={`h-4 w-4 ${i < r.rating ? "fill-secondary" : "fill-none"}`} />
+                    ))}
+                  </div>
+                  {r.comment && <p className="mt-3 text-sm text-slate-600">&ldquo;{r.comment}&rdquo;</p>}
+                  <p className="mt-3 text-xs font-medium text-slate-500">
+                    {r.profiles?.full_name ?? "FATE Cargo Customer"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* CTA / quick lead capture */}
       <section className="py-16">
-        <div className="container-page flex flex-col items-center gap-4 rounded-2xl bg-primary px-6 py-14 text-center text-white sm:px-14">
-          <PackageSearch className="h-10 w-10 text-secondary" />
-          <h2 className="text-3xl font-bold">Ready to ship with {COMPANY.name}?</h2>
-          <p className="max-w-xl text-slate-200">
-            Request a free quote today and our team will get back to you with competitive rates.
-          </p>
-          <Button asChild size="lg" variant="secondary">
-            <Link href="/get-quote">
-              Get a Quote <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+        <div className="container-page grid gap-8 rounded-2xl bg-primary px-6 py-14 text-white sm:px-14 lg:grid-cols-2 lg:items-center">
+          <div className="flex flex-col items-start gap-4">
+            <PackageSearch className="h-10 w-10 text-secondary" />
+            <h2 className="text-3xl font-bold">Ready to ship with {COMPANY.name}?</h2>
+            <p className="max-w-xl text-slate-200">
+              Request a free quote today and our team will get back to you with competitive rates.
+            </p>
+            <Button asChild size="lg" variant="secondary">
+              <Link href="/get-quote">
+                Get a Full Quote <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+          <div className="rounded-xl bg-white p-6">
+            <p className="mb-4 font-semibold text-slate-900">Or get a fast callback</p>
+            <QuickLeadForm />
+          </div>
         </div>
       </section>
     </>

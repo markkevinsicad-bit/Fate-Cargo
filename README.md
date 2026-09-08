@@ -193,8 +193,26 @@ supabase/
 - ✅ QR scan audit log (`qr_scan_logs`) — every scan, successful or not, is recorded
 - ✅ Every shipment status change creates a tracking event + customer notification automatically (via RPC, not scattered client-side logic)
 
-## What's intentionally NOT in Phase 2 (Phase 3)
+## What's implemented in Phase 3
 
-- Driver pickup/delivery workflows, proof of delivery
-- Realtime (Supabase Realtime) live updates — current implementation uses Next.js `revalidatePath` + manual refresh; live push updates were not added this phase
-- Repeat booking, business customers, bulk booking, referrals, reviews, reports/analytics, audit logs, settings
+- ✅ **Pickup management**: full workflow (requested → scheduled → assigned → out for pickup → arrived → picked up), admin assignment UI (`/admin/pickups`), driver completion with condition/photos (`complete_pickup` RPC — atomic proof + status + tracking event + notification + audit log)
+- ✅ **Delivery management + Proof of Delivery**: full workflow (`/admin/deliveries`), driver completion requiring recipient name + optional photo (`complete_delivery` RPC is the *only* path to a DELIVERED shipment)
+- ✅ **Driver portal** (`/driver`): role-gated, shows today's/upcoming/completed pickups and deliveries with real assignment data, start/arrive/complete actions, camera photo capture for proof
+- ✅ **Driver management** (`/admin/drivers`): activate/deactivate (soft, preserves history), promote existing customer accounts to driver
+- ✅ **Business customer portal**: organizations + authorized members (admin-managed), customer-facing org shipment history, CSV bulk booking with row-level validation shown before import (`/dashboard/organizations/[id]/bulk-booking`)
+- ✅ **Saved addresses**: customers can save/reuse pickup & delivery addresses
+- ✅ **Repeat booking**: pre-fills a new booking from a previous shipment's allowed fields — never reuses the old FATE Cargo ID, QR token, or internal notes; still requires full review/confirm
+- ✅ **Lead generation**: public quick-lead widget on the homepage, admin CRM (`/admin/leads`) with status/follow-up/notes
+- ✅ **Referral system**: unique per-customer codes generated on demand, self-referral and double-redemption blocked, conversion tracked automatically on first booking, admin analytics (`/admin/referrals`)
+- ✅ **Reviews**: customers can review only their own delivered shipments, admin moderation gate before anything appears publicly, real approved reviews now shown on the homepage
+- ✅ **Reports** (`/admin/reports`): shipment status/destination/region/service breakdowns, customer acquisition metrics, date-range filter, CSV export — all calculated from real data, with an honest note where a metric (average processing time) isn't reliably calculable yet
+- ✅ **Settings** (`/admin/settings`): manage services, destinations, cargo categories, and referral settings without touching code
+- ✅ **Audit logs**: every significant RPC (booking, status change, receiving, QR scan, pickup/delivery assignment & completion, referral redemption, review) writes an audit trail row; viewer at `/admin/audit-logs`
+- ✅ Extended `can_access_shipment()` and storage policies so drivers only see/upload photos for shipments they're actually assigned to
+
+## What's simplified or deferred (noted honestly, not hidden)
+
+- Referral code redemption is available on the customer's `/dashboard/referrals` page, not auto-applied during the OTP signup flow itself — a customer redeems it once, post-signup
+- Reports show a fixed set of date ranges (Today/Week/Month/All Time); no arbitrary custom date-range picker yet
+- No GPS/location verification on Proof of Delivery — intentionally not claimed, per the "don't falsely claim location verification" instruction
+- Realtime (Supabase Realtime) push updates were not added in this phase either; the app relies on `revalidatePath` + manual refresh

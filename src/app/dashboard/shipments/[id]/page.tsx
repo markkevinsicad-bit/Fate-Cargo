@@ -1,12 +1,14 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2, MapPin, Package, Truck, FileText } from "lucide-react";
+import { CheckCircle2, MapPin, Package, Truck, FileText, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShipmentStatusBadge } from "@/components/ui/shipment-status-badge";
 import { SpecialHandlingBadges } from "@/components/ui/special-handling-badges";
 import { QrCodeDisplay } from "@/components/shared/qr-code-display";
+import { SubmitReviewForm } from "@/components/dashboard/submit-review-form";
 import { getCurrentProfile } from "@/lib/supabase/auth-helpers";
+import { createClient } from "@/lib/supabase/server";
 import {
   getShipmentById,
   getShipmentTrackingEvents,
@@ -35,6 +37,13 @@ export default async function CustomerShipmentDetailPage({
     getShipmentTrackingEvents(id),
     getCargoConditionRecords(id),
   ]);
+
+  let existingReview: { rating: number; comment: string | null } | null = null;
+  if (shipment.status === "delivered") {
+    const supabase = await createClient();
+    const { data } = await supabase.from("reviews").select("rating, comment").eq("shipment_id", id).maybeSingle();
+    existingReview = data;
+  }
 
   const allPhotoPaths = conditionRecords.flatMap((r) => r.photo_paths ?? []);
   const signedUrls = await getSignedPhotoUrls(allPhotoPaths);
@@ -193,6 +202,25 @@ export default async function CustomerShipmentDetailPage({
 
           <Button asChild variant="outline" className="w-full">
             <Link href={`/track?id=${shipment.fate_cargo_id}`}>Open Public Tracking</Link>
+          </Button>
+
+          {shipment.status === "delivered" && (
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="mb-4 flex items-center gap-2 font-semibold text-slate-900">
+                  <Star className="h-4 w-4 text-primary" /> Leave a Review
+                </h2>
+                <SubmitReviewForm
+                  shipmentId={shipment.id}
+                  existingRating={existingReview?.rating}
+                  existingComment={existingReview?.comment ?? undefined}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          <Button asChild variant="outline" className="w-full">
+            <Link href={`/dashboard/book?repeat=${shipment.id}`}>Repeat This Booking</Link>
           </Button>
         </div>
       </div>

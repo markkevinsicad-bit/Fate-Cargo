@@ -13,10 +13,12 @@ export function AdminFilterBar({
   searchPlaceholder = "Search…",
   statusOptions,
   destinationOptions,
+  driverOptions,
 }: {
   searchPlaceholder?: string;
   statusOptions?: Option[];
   destinationOptions?: Option[];
+  driverOptions?: Option[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -75,6 +77,25 @@ export function AdminFilterBar({
           <SelectContent>
             <SelectItem value="__all__">All destinations</SelectItem>
             {destinationOptions.map((o) => (
+              <SelectItem key={o.value} value={o.value}>
+                {o.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+
+      {driverOptions && (
+        <Select
+          value={searchParams.get("driver") ?? "__all__"}
+          onValueChange={(v) => updateParam("driver", v === "__all__" ? null : v)}
+        >
+          <SelectTrigger className="w-full sm:w-48">
+            <SelectValue placeholder="All drivers" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__all__">All drivers</SelectItem>
+            {driverOptions.map((o) => (
               <SelectItem key={o.value} value={o.value}>
                 {o.label}
               </SelectItem>

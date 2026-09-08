@@ -4,6 +4,7 @@ import type { Database } from "./database.types";
 
 const CUSTOMER_ROUTES = ["/dashboard"];
 const ADMIN_ROUTES = ["/admin"];
+const DRIVER_ROUTES = ["/driver"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -37,18 +38,20 @@ export async function updateSession(request: NextRequest) {
 
   const isCustomerRoute = CUSTOMER_ROUTES.some((r) => pathname.startsWith(r));
   const isAdminRoute = ADMIN_ROUTES.some((r) => pathname.startsWith(r));
+  const isDriverRoute = DRIVER_ROUTES.some((r) => pathname.startsWith(r));
 
-  if ((isCustomerRoute || isAdminRoute) && !user) {
+  if ((isCustomerRoute || isAdminRoute || isDriverRoute) && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
   }
 
-  // Middleware only checks "is someone logged in". The actual admin role
-  // check happens server-side (DB query against `profiles`) inside
-  // src/app/admin/layout.tsx and every admin Server Action - that is the
-  // real authorization boundary, enforced again by RLS at the database.
+  // Middleware only checks "is someone logged in". The actual role check
+  // (admin vs driver vs customer) happens server-side (DB query against
+  // `profiles`) inside each area's layout.tsx and every Server Action -
+  // that is the real authorization boundary, enforced again by RLS at
+  // the database.
 
   return supabaseResponse;
 }

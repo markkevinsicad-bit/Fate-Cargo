@@ -28,11 +28,13 @@ export function BookingForm({
   destinations,
   cargoCategories,
   customer,
+  initialValues,
 }: {
   services: Option[];
   destinations: (Option & { region: string })[];
   cargoCategories: Option[];
   customer: { fullName: string; phone: string; email: string };
+  initialValues?: Partial<z.input<typeof bookingSchema>>;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<"form" | "review">("form");
@@ -50,6 +52,7 @@ export function BookingForm({
     defaultValues: {
       pickup_required: true,
       special_handling: [],
+      ...initialValues,
     },
   });
 

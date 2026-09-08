@@ -25,6 +25,8 @@ export interface Database {
           role: "customer" | "staff" | "warehouse" | "driver" | "admin";
           business_name: string | null;
           is_business: boolean;
+          is_active: boolean;
+          referral_code: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -36,6 +38,8 @@ export interface Database {
           role?: "customer" | "staff" | "warehouse" | "driver" | "admin";
           business_name?: string | null;
           is_business?: boolean;
+          is_active?: boolean;
+          referral_code?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -352,6 +356,7 @@ export interface Database {
           customer_notes: string | null;
           internal_notes: string | null;
           loading_trip_id: string | null;
+          organization_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -389,6 +394,7 @@ export interface Database {
           customer_notes?: string | null;
           internal_notes?: string | null;
           loading_trip_id?: string | null;
+          organization_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -534,6 +540,373 @@ export interface Database {
           },
         ];
       };
+      pickups: {
+        Row: {
+          id: string;
+          shipment_id: string;
+          pickup_reference: string;
+          scheduled_date: string | null;
+          scheduled_time: string | null;
+          pickup_address: string;
+          pickup_contact_name: string | null;
+          pickup_contact_phone: string | null;
+          assigned_driver_id: string | null;
+          status: "requested" | "scheduled" | "assigned" | "out_for_pickup" | "arrived" | "picked_up" | "failed" | "cancelled";
+          notes: string | null;
+          proof_condition: string | null;
+          proof_photo_paths: string[];
+          proof_notes: string | null;
+          picked_up_at: string | null;
+          picked_up_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          shipment_id: string;
+          pickup_reference: string;
+          scheduled_date?: string | null;
+          scheduled_time?: string | null;
+          pickup_address: string;
+          pickup_contact_name?: string | null;
+          pickup_contact_phone?: string | null;
+          assigned_driver_id?: string | null;
+          status?: Database["public"]["Tables"]["pickups"]["Row"]["status"];
+          notes?: string | null;
+          proof_condition?: string | null;
+          proof_photo_paths?: string[];
+          proof_notes?: string | null;
+          picked_up_at?: string | null;
+          picked_up_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["pickups"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "pickups_shipment_id_fkey";
+            columns: ["shipment_id"];
+            isOneToOne: true;
+            referencedRelation: "shipments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "pickups_assigned_driver_id_fkey";
+            columns: ["assigned_driver_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      deliveries: {
+        Row: {
+          id: string;
+          shipment_id: string;
+          delivery_reference: string;
+          assigned_driver_id: string | null;
+          destination_address: string;
+          recipient_name: string | null;
+          recipient_phone: string | null;
+          scheduled_date: string | null;
+          status: "pending_assignment" | "assigned" | "out_for_delivery" | "arrived" | "delivered" | "failed" | "return_required";
+          delivery_notes: string | null;
+          pod_photo_path: string | null;
+          pod_recipient_name: string | null;
+          pod_notes: string | null;
+          delivered_at: string | null;
+          delivered_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          shipment_id: string;
+          delivery_reference: string;
+          assigned_driver_id?: string | null;
+          destination_address: string;
+          recipient_name?: string | null;
+          recipient_phone?: string | null;
+          scheduled_date?: string | null;
+          status?: Database["public"]["Tables"]["deliveries"]["Row"]["status"];
+          delivery_notes?: string | null;
+          pod_photo_path?: string | null;
+          pod_recipient_name?: string | null;
+          pod_notes?: string | null;
+          delivered_at?: string | null;
+          delivered_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["deliveries"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "deliveries_shipment_id_fkey";
+            columns: ["shipment_id"];
+            isOneToOne: true;
+            referencedRelation: "shipments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "deliveries_assigned_driver_id_fkey";
+            columns: ["assigned_driver_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      business_organizations: {
+        Row: {
+          id: string;
+          name: string;
+          contact_email: string | null;
+          contact_phone: string | null;
+          billing_address: string | null;
+          is_active: boolean;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          contact_email?: string | null;
+          contact_phone?: string | null;
+          billing_address?: string | null;
+          is_active?: boolean;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["business_organizations"]["Insert"]>;
+        Relationships: [];
+      };
+      business_organization_members: {
+        Row: {
+          id: string;
+          organization_id: string;
+          user_id: string;
+          org_role: "member" | "manager" | "owner";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          user_id: string;
+          org_role?: "member" | "manager" | "owner";
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["business_organization_members"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "business_organization_members_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "business_organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "business_organization_members_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      saved_addresses: {
+        Row: {
+          id: string;
+          customer_id: string | null;
+          organization_id: string | null;
+          label: string;
+          address_type: "pickup" | "delivery" | "both";
+          address: string;
+          contact_name: string | null;
+          contact_phone: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          customer_id?: string | null;
+          organization_id?: string | null;
+          label: string;
+          address_type?: "pickup" | "delivery" | "both";
+          address: string;
+          contact_name?: string | null;
+          contact_phone?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["saved_addresses"]["Insert"]>;
+        Relationships: [];
+      };
+      leads: {
+        Row: {
+          id: string;
+          full_name: string;
+          phone: string;
+          email: string | null;
+          origin: string | null;
+          destination: string | null;
+          cargo_type: string | null;
+          estimated_size: string | null;
+          preferred_service_id: string | null;
+          notes: string | null;
+          status: "new" | "contacted" | "quoted" | "converted" | "lost";
+          internal_notes: string | null;
+          follow_up_date: string | null;
+          converted_shipment_id: string | null;
+          referral_code_used: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          full_name: string;
+          phone: string;
+          email?: string | null;
+          origin?: string | null;
+          destination?: string | null;
+          cargo_type?: string | null;
+          estimated_size?: string | null;
+          preferred_service_id?: string | null;
+          notes?: string | null;
+          status?: Database["public"]["Tables"]["leads"]["Row"]["status"];
+          internal_notes?: string | null;
+          follow_up_date?: string | null;
+          converted_shipment_id?: string | null;
+          referral_code_used?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["leads"]["Insert"]>;
+        Relationships: [];
+      };
+      referrals: {
+        Row: {
+          id: string;
+          referrer_id: string;
+          referred_id: string;
+          referral_code: string;
+          converted: boolean;
+          converted_shipment_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          referrer_id: string;
+          referred_id: string;
+          referral_code: string;
+          converted?: boolean;
+          converted_shipment_id?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["referrals"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referrer_id_fkey";
+            columns: ["referrer_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "referrals_referred_id_fkey";
+            columns: ["referred_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      referral_settings: {
+        Row: {
+          id: boolean;
+          reward_description: string;
+          is_active: boolean;
+          updated_at: string;
+        };
+        Insert: {
+          id?: boolean;
+          reward_description?: string;
+          is_active?: boolean;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["referral_settings"]["Insert"]>;
+        Relationships: [];
+      };
+      reviews: {
+        Row: {
+          id: string;
+          shipment_id: string;
+          customer_id: string;
+          rating: number;
+          comment: string | null;
+          is_visible: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          shipment_id: string;
+          customer_id: string;
+          rating: number;
+          comment?: string | null;
+          is_visible?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["reviews"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "reviews_shipment_id_fkey";
+            columns: ["shipment_id"];
+            isOneToOne: true;
+            referencedRelation: "shipments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "reviews_customer_id_fkey";
+            columns: ["customer_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      audit_logs: {
+        Row: {
+          id: string;
+          actor_id: string | null;
+          actor_role: "customer" | "staff" | "warehouse" | "driver" | "admin" | null;
+          action: string;
+          entity_type: string;
+          entity_id: string | null;
+          metadata: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          actor_id?: string | null;
+          actor_role?: "customer" | "staff" | "warehouse" | "driver" | "admin" | null;
+          action: string;
+          entity_type: string;
+          entity_id?: string | null;
+          metadata?: Json;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["audit_logs"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_actor_id_fkey";
+            columns: ["actor_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -597,6 +970,90 @@ export interface Database {
         Args: { p_fate_cargo_id: string };
         Returns: Json;
       };
+      create_pickup_request: {
+        Args: {
+          p_shipment_id: string;
+          p_pickup_address: string;
+          p_scheduled_date?: string | null;
+          p_scheduled_time?: string | null;
+          p_pickup_contact_name?: string | null;
+          p_pickup_contact_phone?: string | null;
+          p_notes?: string | null;
+        };
+        Returns: string;
+      };
+      assign_pickup_driver: {
+        Args: { p_pickup_id: string; p_driver_id: string };
+        Returns: undefined;
+      };
+      driver_update_pickup_status: {
+        Args: {
+          p_pickup_id: string;
+          p_status: "requested" | "scheduled" | "assigned" | "out_for_pickup" | "arrived" | "failed" | "cancelled";
+        };
+        Returns: undefined;
+      };
+      complete_pickup: {
+        Args: {
+          p_pickup_id: string;
+          p_condition: string;
+          p_notes?: string | null;
+          p_photo_paths?: string[];
+        };
+        Returns: undefined;
+      };
+      create_delivery_assignment: {
+        Args: {
+          p_shipment_id: string;
+          p_destination_address: string;
+          p_recipient_name?: string | null;
+          p_recipient_phone?: string | null;
+          p_scheduled_date?: string | null;
+          p_notes?: string | null;
+        };
+        Returns: string;
+      };
+      assign_delivery_driver: {
+        Args: { p_delivery_id: string; p_driver_id: string };
+        Returns: undefined;
+      };
+      driver_update_delivery_status: {
+        Args: {
+          p_delivery_id: string;
+          p_status: "pending_assignment" | "assigned" | "out_for_delivery" | "arrived" | "failed" | "return_required";
+        };
+        Returns: undefined;
+      };
+      complete_delivery: {
+        Args: {
+          p_delivery_id: string;
+          p_recipient_name: string;
+          p_photo_path?: string | null;
+          p_notes?: string | null;
+        };
+        Returns: undefined;
+      };
+      get_or_create_referral_code: {
+        Args: Record<string, never>;
+        Returns: string;
+      };
+      redeem_referral_code: {
+        Args: { p_code: string };
+        Returns: undefined;
+      };
+      submit_review: {
+        Args: { p_shipment_id: string; p_rating: number; p_comment?: string | null };
+        Returns: string;
+      };
+      log_audit_event: {
+        Args: {
+          p_action: string;
+          p_entity_type: string;
+          p_entity_id?: string | null;
+          p_metadata?: Json;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
       user_role: "customer" | "staff" | "warehouse" | "driver" | "admin";
@@ -623,6 +1080,26 @@ export interface Database {
         | "already_processed"
         | "cancelled_shipment"
         | "error";
+      pickup_status:
+        | "requested"
+        | "scheduled"
+        | "assigned"
+        | "out_for_pickup"
+        | "arrived"
+        | "picked_up"
+        | "failed"
+        | "cancelled";
+      delivery_status:
+        | "pending_assignment"
+        | "assigned"
+        | "out_for_delivery"
+        | "arrived"
+        | "delivered"
+        | "failed"
+        | "return_required";
+      lead_status: "new" | "contacted" | "quoted" | "converted" | "lost";
+      org_member_role: "member" | "manager" | "owner";
+      saved_address_type: "pickup" | "delivery" | "both";
     };
     CompositeTypes: Record<string, never>;
   };

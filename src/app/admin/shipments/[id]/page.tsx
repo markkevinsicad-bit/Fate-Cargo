@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShipmentStatusBadge } from "@/components/ui/shipment-status-badge";
 import { SpecialHandlingBadges } from "@/components/ui/special-handling-badges";
+import { PickupStatusBadge, DeliveryStatusBadge } from "@/components/ui/pickup-delivery-badges";
 import { QrCodeDisplay } from "@/components/shared/qr-code-display";
 import {
   getShipmentById,
@@ -11,22 +12,27 @@ import {
   getQrScanLogs,
   getLoadingTrips,
 } from "@/lib/data/shipments";
+import { getPickupByShipmentId, getDeliveryByShipmentId } from "@/lib/data/pickups-deliveries";
 import { formatDate, cubicMetersToDisplay } from "@/lib/utils";
-import type { ShipmentStatus } from "@/lib/constants";
+import type { ShipmentStatus, PickupStatus, DeliveryStatus } from "@/lib/constants";
 import { AdminShipmentActions } from "@/components/admin/admin-shipment-actions";
 import { AdminInternalNotesForm } from "@/components/admin/admin-internal-notes-form";
 import { AdminTripAssignForm } from "@/components/admin/admin-trip-assign-form";
+import { CreatePickupForm } from "@/components/admin/create-pickup-form";
+import { CreateDeliveryForm } from "@/components/admin/create-delivery-form";
 
 export default async function AdminShipmentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const shipment = await getShipmentById(id);
   if (!shipment) notFound();
 
-  const [events, conditionRecords, scanLogs, loadingTrips] = await Promise.all([
+  const [events, conditionRecords, scanLogs, loadingTrips, pickup, delivery] = await Promise.all([
     getShipmentTrackingEvents(id),
     getCargoConditionRecords(id),
     getQrScanLogs(id),
     getLoadingTrips(),
+    getPickupByShipmentId(id),
+    getDeliveryByShipmentId(id),
   ]);
 
   const allPhotoPaths = conditionRecords.flatMap((r) => r.photo_paths ?? []);
@@ -187,6 +193,56 @@ export default async function AdminShipmentDetailPage({ params }: { params: Prom
             <CardContent className="space-y-3 p-6">
               <h2 className="font-semibold text-slate-900">Update Status</h2>
               <AdminShipmentActions shipmentId={shipment.id} currentStatus={shipment.status as ShipmentStatus} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="space-y-3 p-6">
+              <h2 className="font-semibold text-slate-900">Pickup</h2>
+              {pickup ? (
+                <div className="space-y-1 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs text-slate-500">{pickup.pickup_reference}</span>
+                    <PickupStatusBadge status={pickup.status as PickupStatus} />
+                  </div>
+                  <p className="text-slate-600">{pickup.pickup_address}</p>
+                  {pickup.scheduled_date && <p className="text-xs text-slate-400">{formatDate(pickup.scheduled_date)}</p>}
+                </div>
+              ) : shipment.pickup_required ? (
+                <CreatePickupForm
+                  shipmentId={shipment.id}
+                  defaultAddress={shipment.origin_address}
+                  defaultContactName={shipment.origin_contact_name ?? undefined}
+                  defaultContactPhone={shipment.origin_contact_phone ?? undefined}
+                />
+              ) : (
+                <p className="text-sm text-slate-500">This shipment does not require pickup.</p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="space-y-3 p-6">
+              <h2 className="font-semibold text-slate-900">Delivery</h2>
+              {delivery ? (
+                <div className="space-y-1 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs text-slate-500">{delivery.delivery_reference}</span>
+                    <DeliveryStatusBadge status={delivery.status as DeliveryStatus} />
+                  </div>
+                  <p className="text-slate-600">{delivery.destination_address}</p>
+                  {delivery.pod_recipient_name && (
+                    <p className="text-xs text-emerald-700">Delivered to {delivery.pod_recipient_name}</p>
+                  )}
+                </div>
+              ) : (
+                <CreateDeliveryForm
+                  shipmentId={shipment.id}
+                  defaultAddress={shipment.destination_address ?? undefined}
+                  defaultRecipientName={shipment.recipient_name ?? undefined}
+                  defaultRecipientPhone={shipment.recipient_phone ?? undefined}
+                />
+              )}
             </CardContent>
           </Card>
 
