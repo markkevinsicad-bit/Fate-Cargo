@@ -42,7 +42,17 @@ export async function createTeamAccount(input: {
     return { success: false, error: "Full name is required." };
   }
 
-  const adminClient = createAdminClient();
+  let adminClient;
+  try {
+    adminClient = createAdminClient();
+  } catch (err) {
+    console.error("createTeamAccount: createAdminClient failed:", err);
+    return {
+      success: false,
+      error:
+        "Server is missing Supabase admin credentials (SUPABASE_SERVICE_ROLE_KEY). Check your environment variables.",
+    };
+  }
 
   const { error } = await adminClient.auth.admin.createUser({
     email: input.email.trim().toLowerCase(),
@@ -53,12 +63,13 @@ export async function createTeamAccount(input: {
   });
 
   if (error) {
-    console.error("createTeamAccount error:", error);
+    console.error("createTeamAccount: createUser failed:", error);
     return {
       success: false,
-      error: error.message.includes("already been registered")
-        ? "An account with that email already exists."
-        : "Could not create the account. Please try again.",
+      // Surfacing the real Supabase error here is safe - this action is
+      // admin-only - and makes setup/config issues far easier to diagnose
+      // than a generic message.
+      error: error.message || "Could not create the account. Please try again.",
     };
   }
 
@@ -88,10 +99,22 @@ export async function setTeamMemberActive(userId: string, isActive: boolean): Pr
 
   // Also revoke/restore actual sign-in ability, not just the app-level
   // is_active flag, so a deactivated staff member truly cannot log in.
-  const adminClient = createAdminClient();
-  await adminClient.auth.admin.updateUserById(userId, {
-    ban_duration: isActive ? "none" : "876000h", // ~100 years, effectively indefinite
-  });
+  try {
+    const adminClient = createAdminClient();
+    const { error: banError } = await adminClient.auth.admin.updateUserById(userId, {
+      ban_duration: isActive ? "none" : "876000h", // ~100 years, effectively indefinite
+    });
+    if (banError) {
+      console.error("setTeamMemberActive: updateUserById failed:", banError);
+      return { success: false, error: banError.message || "Could not update sign-in access." };
+    }
+  } catch (err) {
+    console.error("setTeamMemberActive: createAdminClient failed:", err);
+    return {
+      success: false,
+      error: "Server is missing Supabase admin credentials (SUPABASE_SERVICE_ROLE_KEY).",
+    };
+  }
 
   revalidatePath("/admin/team");
   revalidatePath("/admin/drivers");
