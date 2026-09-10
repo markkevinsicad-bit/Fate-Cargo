@@ -54,7 +54,7 @@ export async function createTeamAccount(input: {
     };
   }
 
-  const { error } = await adminClient.auth.admin.createUser({
+  const { data, error } = await adminClient.auth.admin.createUser({
     email: input.email.trim().toLowerCase(),
     password: input.password,
     email_confirm: true,
@@ -71,6 +71,30 @@ export async function createTeamAccount(input: {
       // than a generic message.
       error: error.message || "Could not create the account. Please try again.",
     };
+  }
+
+  // IMPORTANT: don't rely on the handle_new_user() trigger alone to pick
+  // up the role. In practice, Supabase's Auth service sets custom
+  // app_metadata in a follow-up step after the initial auth.users insert,
+  // not atomically with it - so a trigger firing on INSERT can see the
+  // role as not-yet-set and default the profile to 'customer'. By the
+  // time createUser() has returned successfully here, app_metadata is
+  // guaranteed to be persisted, so we set profiles.role directly with the
+  // service-role client (bypasses RLS - safe, this whole action is
+  // already gated to admins only) rather than trusting trigger timing.
+  if (data.user) {
+    const { error: profileError } = await adminClient
+      .from("profiles")
+      .update({ role: input.role, full_name: input.fullName.trim() })
+      .eq("id", data.user.id);
+
+    if (profileError) {
+      console.error("createTeamAccount: profile role sync failed:", profileError);
+      return {
+        success: false,
+        error: "Account was created but its role could not be set. Please contact support.",
+      };
+    }
   }
 
   revalidatePath("/admin/team");
