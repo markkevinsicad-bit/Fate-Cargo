@@ -10,6 +10,21 @@ export type CreateBookingResult =
   | { success: true; shipmentId: string }
   | { success: false; error: string; fieldErrors?: Record<string, string> };
 
+const BOOKING_ERROR_MESSAGES: Record<string, string> = {
+  AUTH_REQUIRED: "You must be logged in to book a shipment.",
+  ORIGIN_REQUIRED: "Pickup address is required.",
+  NOT_ORG_MEMBER: "You're not authorized to book under that business organization.",
+};
+
+function friendlyBookingError(error: unknown): string {
+  const message = (error as { message?: string })?.message ?? "";
+  if (BOOKING_ERROR_MESSAGES[message]) return BOOKING_ERROR_MESSAGES[message];
+  // Surface the real Postgres/Supabase error rather than hiding it behind
+  // a generic message - this is the requesting user's own booking attempt,
+  // so it's safe, and makes setup/config issues far easier to diagnose.
+  return message ? `We couldn't create your booking: ${message}` : "We couldn't create your booking right now. Please try again in a moment.";
+}
+
 export async function createBooking(input: BookingInput): Promise<CreateBookingResult> {
   const parsed = bookingSchema.safeParse(input);
   if (!parsed.success) {
@@ -69,7 +84,7 @@ export async function createBooking(input: BookingInput): Promise<CreateBookingR
     console.error("createBooking RPC error:", error);
     return {
       success: false,
-      error: "We couldn't create your booking right now. Please try again in a moment.",
+      error: friendlyBookingError(error),
     };
   }
 
