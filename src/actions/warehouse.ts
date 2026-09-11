@@ -19,7 +19,8 @@ const ERROR_MESSAGES: Record<string, string> = {
 
 function friendlyError(error: unknown): string {
   const message = (error as { message?: string })?.message ?? "";
-  return ERROR_MESSAGES[message] ?? "Something went wrong while looking up this shipment.";
+  if (ERROR_MESSAGES[message]) return ERROR_MESSAGES[message];
+  return message ? `Action failed: ${message}` : "Something went wrong while looking up this shipment.";
 }
 
 export async function scanQrToken(token: string, scanType: QrScanType): Promise<ScanQrResult> {

@@ -13,9 +13,13 @@ const ERROR_MESSAGES: Record<string, string> = {
   USE_COMPLETE_PICKUP: "Use the pickup completion form to mark cargo as picked up.",
 };
 
-function friendlyError(error: unknown, fallback = "Something went wrong. Please try again."): string {
+function friendlyError(error: unknown): string {
   const message = (error as { message?: string })?.message ?? "";
-  return ERROR_MESSAGES[message] ?? fallback;
+  if (ERROR_MESSAGES[message]) return ERROR_MESSAGES[message];
+  // Surface the real Postgres/Supabase error rather than a generic
+  // message - these actions are already role-gated (staff/admin/driver),
+  // so it's safe, and makes setup/config issues far easier to diagnose.
+  return message ? `Action failed: ${message}` : "Something went wrong. Please try again.";
 }
 
 export async function createPickupRequest(input: {

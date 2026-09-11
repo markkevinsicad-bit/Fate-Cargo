@@ -14,9 +14,10 @@ const ERROR_MESSAGES: Record<string, string> = {
   RECIPIENT_NAME_REQUIRED: "Recipient name is required to complete delivery.",
 };
 
-function friendlyError(error: unknown, fallback = "Something went wrong. Please try again."): string {
+function friendlyError(error: unknown): string {
   const message = (error as { message?: string })?.message ?? "";
-  return ERROR_MESSAGES[message] ?? fallback;
+  if (ERROR_MESSAGES[message]) return ERROR_MESSAGES[message];
+  return message ? `Action failed: ${message}` : "Something went wrong. Please try again.";
 }
 
 export async function createDeliveryAssignment(input: {
