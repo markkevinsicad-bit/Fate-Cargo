@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Truck, MapPinned, ShieldCheck, PackageSearch, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,12 +23,25 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-dark via-primary-dark to-primary">
-        {/* Decorative shapes - swap this section for a real photo whenever you have one:
-            add a background image to this <section> and drop the gradient/blobs below. */}
-        <div className="pointer-events-none absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-secondary/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-40 right-1/4 h-80 w-80 rounded-full bg-primary/40 blur-3xl" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/3 border-l-[3px] border-secondary/30 lg:block" />
+      <section className="relative overflow-hidden bg-primary-dark">
+        {/*
+          BACKGROUND IMAGE — drop your file at:
+            public/images/hero-banner.jpg
+          (any of .jpg / .jpeg / .png / .webp works — just update the
+          filename below to match). Recommended: a wide photo, at least
+          1920px wide, with trucks/ships/planes similar to the reference
+          design. The dark gradient div right below it keeps the white
+          text readable on top of the photo — you can adjust how dark it
+          is by changing the opacity numbers (the /90, /70, /30 values).
+        */}
+        <Image
+          src="/images/hero-banner.jpg"
+          alt="FATE Cargo trucks, ships, and planes"
+          fill
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/95 via-primary-dark/80 to-primary-dark/30" />
 
         <div className="container-page relative z-10 grid gap-12 py-20 sm:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div className="flex flex-col items-start gap-6">
