@@ -34,39 +34,14 @@ export default async function HomePage() {
         {/* Navy overlay for text readability */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-primary-dark/95 via-primary-dark/70 to-primary-dark/10" />
 
-        <div className="container-page relative z-10 grid gap-12 py-20 sm:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-          <div className="flex flex-col items-start gap-6">
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-secondary">
-              Logistics • Freight • Delivery
-            </span>
-            <h1 className="max-w-2xl text-4xl font-extrabold uppercase leading-tight text-white sm:text-5xl lg:text-6xl">
-              From Booking to Doorstep,{" "}
-              <span className="text-secondary">Everything Connected</span>
-            </h1>
-            <p className="max-w-xl text-lg text-slate-300">{COMPANY.positioning}</p>
-            <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg" className="gap-2 rounded-full px-7 shadow-lg">
-                <Link href="/login">
-                  <PackageSearch className="h-4 w-4" /> Book a Shipment
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="rounded-full border-white/30 bg-white/5 px-7 text-white hover:bg-white/10"
-              >
-                <Link href="/services">
-                  Our Services <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex justify-center lg:justify-end lg:mt-24">
-  <HeroQuickActions />
+        <div className="container-page relative z-10 py-14 sm:py-16">
+  <div className="flex flex-col items-start gap-6">
+    <span className="text-xs font-bold uppercase tracking-[0.2em] text-secondary">
+      Logistics • Freight • Delivery
+    </span>
+    ... (headline, paragraph, buttons stay exactly the same, don't touch these) ...
+  </div>
 </div>
-        </div>
       </section>
 
       {/* Trust strip */}
@@ -196,7 +171,17 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+{/* Book a shipment / track shipment — moved here from the hero */}
+<section className="bg-slate-50 py-16">
+  <div className="container-page flex flex-col items-center text-center">
+    <p className="text-xs font-bold uppercase tracking-widest text-secondary-dark">Get Started</p>
+    <h2 className="mt-1 mb-8 text-3xl font-extrabold text-slate-900">Book or Track in Seconds</h2>
+    <HeroQuickActions />
+  </div>
+</section>
 
+{/* CTA / quick lead capture */}
+<section className="py-16"></section>
       {/* CTA / quick lead capture */}
       <section className="py-16">
         <div className="container-page grid gap-8 rounded-3xl bg-primary px-6 py-14 text-white sm:px-14 lg:grid-cols-2 lg:items-center">
