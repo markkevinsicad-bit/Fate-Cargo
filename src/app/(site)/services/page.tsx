@@ -10,8 +10,9 @@ export default async function ServicesPage() {
   const services = await getActiveServices();
 
   return (
-    <div className="container-page py-14">
-      <h1 className="text-3xl font-bold text-slate-900">Our Services</h1>
+    <div className="container-page py-16">
+      <p className="text-xs font-bold uppercase tracking-widest text-secondary-dark">What We Offer</p>
+      <h1 className="mt-1 text-4xl font-extrabold text-slate-900">Complete Cargo Solutions</h1>
       <p className="mt-2 max-w-2xl text-slate-500">
         From single-package delivery to full household moves, FATE CARGO handles it with
         competitive rates and a dedicated special handling process.
@@ -20,7 +21,9 @@ export default async function ServicesPage() {
       {services.length > 0 ? (
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
-            <ServiceCard key={s.id} name={s.name} description={s.description} icon={s.icon} />
+            <div key={s.id} id={s.slug} className="scroll-mt-28">
+              <ServiceCard name={s.name} description={s.description} icon={s.icon} slug={s.slug} />
+            </div>
           ))}
         </div>
       ) : (
@@ -28,7 +31,8 @@ export default async function ServicesPage() {
       )}
 
       <div className="mt-16">
-        <h2 className="text-2xl font-bold text-slate-900">Cargo We Accept</h2>
+        <p className="text-xs font-bold uppercase tracking-widest text-secondary-dark">Cargo We Accept</p>
+        <h2 className="mt-1 text-2xl font-bold text-slate-900">Cargo Categories</h2>
         <div className="mt-4 flex flex-wrap gap-2">
           {CARGO_CATEGORIES.map((c) => (
             <Badge key={c} variant="outline" className="text-sm">

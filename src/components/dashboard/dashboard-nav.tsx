@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, User, Package, FileText, Bell, LogOut, PlusCircle, MapPin, Star, Gift, Building2 } from "lucide-react";
+import { LayoutDashboard, User, Package, FileText, Bell, LogOut, PlusCircle, MapPin, Star, Gift, Building2, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/actions/profile";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/dashboard/book", label: "Book a Shipment", icon: PlusCircle },
   { href: "/dashboard/shipments", label: "My Shipments", icon: Package },
   { href: "/dashboard/quotes", label: "Quote Requests", icon: FileText },
+  { href: "/dashboard/moving-requests", label: "Moving Requests", icon: Truck },
   { href: "/dashboard/organizations", label: "Business Accounts", icon: Building2 },
   { href: "/dashboard/addresses", label: "Saved Addresses", icon: MapPin },
   { href: "/dashboard/reviews", label: "My Reviews", icon: Star },
