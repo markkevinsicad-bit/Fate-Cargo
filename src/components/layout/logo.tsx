@@ -24,15 +24,15 @@ import { COMPANY } from "@/lib/constants";
 export function Logo({ dark = false, className }: { dark?: boolean; className?: string }) {
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
-      <span className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-primary to-primary-dark shadow-sm ring-2 ring-secondary/40">
+      <span className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-2 ring-secondary/40">
         <Image src="/images/logo-icon.png" alt={`${COMPANY.name} logo`} fill className="object-contain p-1.5" />
       </span>
       <span className="leading-none">
         <span className="flex items-baseline gap-1">
           <span className={cn("text-lg font-extrabold tracking-tight", dark ? "text-white" : "text-primary")}>
-            CARGO
+            FATE
           </span>
-          <span className="text-lg font-extrabold tracking-tight text-secondary">360</span>
+          <span className="text-lg font-extrabold tracking-tight text-secondary">CARGO</span>
         </span>
         <span
           className={cn(

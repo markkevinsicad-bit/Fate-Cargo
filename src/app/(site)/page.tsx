@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import Link from "next/link";
 import { ArrowRight, Truck, MapPinned, ShieldCheck, PackageSearch, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,24 +24,15 @@ export default async function HomePage() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden bg-primary-dark">
-        {/*
-          BACKGROUND IMAGE — drop your file at:
-            public/images/hero-banner.jpg
-          (any of .jpg / .jpeg / .png / .webp works — just update the
-          filename below to match). Recommended: a wide photo, at least
-          1920px wide, with trucks/ships/planes similar to the reference
-          design. The dark gradient div right below it keeps the white
-          text readable on top of the photo — you can adjust how dark it
-          is by changing the opacity numbers (the /90, /70, /30 values).
-        */}
-        <Image
-          src="/images/hero-banner.jpg"
-          alt="FATE Cargo trucks, ships, and planes"
-          fill
-          priority
-          className="object-cover"
+        {/* FATE Cargo Delivery Services — Hero Background Image */}
+        <img
+          src="/fate-cargo-hero.png"
+          alt="FATE Cargo Delivery Services cargo truck, aircraft, and shipping port"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/95 via-primary-dark/80 to-primary-dark/30" />
+
+        {/* Navy overlay for text readability */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-primary-dark/95 via-primary-dark/70 to-primary-dark/10" />
 
         <div className="container-page relative z-10 grid gap-12 py-20 sm:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div className="flex flex-col items-start gap-6">
@@ -72,9 +63,9 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="flex justify-center lg:justify-end">
-            <HeroQuickActions />
-          </div>
+          <div className="flex justify-center lg:justify-end lg:mt-24">
+  <HeroQuickActions />
+</div>
         </div>
       </section>
 
